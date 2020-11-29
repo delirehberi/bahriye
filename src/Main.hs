@@ -26,10 +26,10 @@ home = do
         case ( (readEither _data)::(Either Text Int) ) of 
           Right x -> do
               liftIO $ writeToFile x 
-                      liftIO $ sendNotification
-                      liftIO $ playSound
-                      text "success"
-                  Left y -> text "data is wrong"
+              liftIO $ sendNotification
+              liftIO $ playSound
+              text "success"
+          Left y -> text "data is wrong"
 
 
 writeToFile:: Int -> IO ()
