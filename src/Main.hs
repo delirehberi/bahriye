@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE DeriveGeneric #-}
+    {-# LANGUAGE DeriveGeneric #-}
 
 module Main where
 
@@ -24,8 +24,8 @@ home = do
     get "/" $ do
         _data <- param "data"
         case ( (readEither _data)::(Either Text Int) ) of 
-                  Right x -> do
-                      liftIO $ writeToFile x 
+          Right x -> do
+              liftIO $ writeToFile x 
                       liftIO $ sendNotification
                       liftIO $ playSound
                       text "success"
@@ -40,16 +40,16 @@ writeToFile d = do
     let decoded = decodeStrict oldData 
         res     = (fromMaybe [] decoded) ++ [d]
         tmpDataFile = dataFile <.> "tmp"
-    
+
     encodeFile tmpDataFile res
     removeFile dataFile
     renameFile tmpDataFile dataFile
 
 sendNotification :: IO String
-sendNotification = readProcess "notify-send" ["-u", "critical", "Ringing..."] []
+sendNotification = readProcess "@@notify-send@@" ["-u", "critical", "Ringing..."] []
 
 playSound :: IO String
-playSound = readProcess "aplay" ["./siren.wav"] []
+playSound = readProcess "@@aplay@@" ["@@SIREN@@"] []
 
 dataStore :: IO FilePath
 dataStore = do
