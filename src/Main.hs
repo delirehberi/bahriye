@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-    {-# LANGUAGE DeriveGeneric #-}
 
 module Main where
 
@@ -24,24 +23,23 @@ home = do
     get "/" $ do
         _data <- param "data"
         case ( (readEither _data)::(Either Text Int) ) of 
-          Right x -> do
-              liftIO $ writeToFile x 
-              liftIO $ sendNotification
-              liftIO $ playSound
+          Right sensor_value -> do
+              liftIO $ (writeToFile sensor_value) 
+                        >> sendNotification 
+                        >> playSound
               text "success"
           Left y -> text "data is wrong"
 
 
 writeToFile:: Int -> IO ()
-writeToFile d = do
+writeToFile sensor_value = do
     dataFile <- dataStore
-    oldData <- BS.readFile dataFile
+    old_sensor_values <- BS.readFile dataFile
 
-    let decoded = decodeStrict oldData 
-        res     = (fromMaybe [] decoded) ++ [d]
-        tmpDataFile = dataFile <.> "tmp"
+    let new_sensor_values     = (fromMaybe [] $ decodeStrict old_sensor_values) ++ [sensor_value]
+        tmpDataFile = dataFile <.> "tmp" --adding .tmp extension to file name
 
-    encodeFile tmpDataFile res
+    encodeFile tmpDataFile new_sensor_values
     removeFile dataFile
     renameFile tmpDataFile dataFile
 
