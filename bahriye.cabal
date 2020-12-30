@@ -19,6 +19,6 @@ executable bahriye
   main-is:             Main.hs
   other-modules:       App
   other-extensions: OverloadedStrings
-  build-depends:       base, scotty, wai, wai-extra,text,aeson, bytestring, directory, strict, filelock, process,filepath
+  build-depends:       base, scotty, wai, wai-extra,text,aeson, bytestring, directory, strict, filelock, process,filepath, time
   hs-source-dirs: src
   default-language:    Haskell2010

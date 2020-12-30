@@ -12,6 +12,7 @@ import qualified System.IO
 import Data.ByteString as BS (readFile,writeFile)
 import System.Process (readProcess)
 import System.FilePath.Posix ((</>),(<.>))
+import Data.Time (getCurrentTime)
 
 main :: IO ()
 main = do
@@ -35,8 +36,8 @@ writeToFile:: Int -> IO ()
 writeToFile sensor_value = do
     dataFile <- dataStore
     old_sensor_values <- BS.readFile dataFile
-
-    let new_sensor_values     = (fromMaybe [] $ decodeStrict old_sensor_values) ++ [sensor_value]
+    t <- getCurrentTime
+    let new_sensor_values     = (fromMaybe [] $ decodeStrict old_sensor_values) ++ [(sensor_value,t)]
         tmpDataFile = dataFile <.> "tmp" --adding .tmp extension to file name
 
     encodeFile tmpDataFile new_sensor_values
@@ -53,3 +54,4 @@ dataStore :: IO FilePath
 dataStore = do
     dir <- getHomeDirectory
     return $  dir </> ".data.json"
+

@@ -1,4 +1,4 @@
-{mkDerivation,stdenv,base,wai,wai-extra,scotty,zlib,text,aeson,bytestring,directory,strict,filelock,process,filepath,pkgs}:
+{mkDerivation,stdenv,base,wai,wai-extra,scotty,zlib,text,aeson,bytestring,directory,strict,filelock,process,filepath,time,pkgs}:
 mkDerivation {
   pname = "bahriye";
   version = "0.1.0.0";
@@ -6,7 +6,7 @@ mkDerivation {
   isLibrary = false;
   isExecutable = true;
   executableHaskellDepends = [
-    base wai wai-extra scotty zlib text aeson bytestring directory strict filelock process filepath
+    base wai wai-extra scotty zlib text aeson bytestring directory strict filelock process filepath time
   ];
   homepage = "http://emre.xyz/bahriye";
   description = "Bahriye";
