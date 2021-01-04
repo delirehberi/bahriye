@@ -13,6 +13,10 @@ import Data.ByteString as BS (readFile,writeFile)
 import System.Process (readProcess)
 import System.FilePath.Posix ((</>),(<.>))
 import Data.Time (getCurrentTime)
+import qualified Network.Wreq as W (get) 
+import Control.Concurrent (forkIO)
+import System.Environment (getEnv)
+
 
 main :: IO ()
 main = do
@@ -25,9 +29,10 @@ home = do
         _data <- param "data"
         case ( (readEither _data)::(Either Text Int) ) of 
           Right sensor_value -> do
-              liftIO $ (writeToFile sensor_value) 
-                        >> sendNotification 
-                        >> playSound
+              liftIO $ do 
+                    (writeToFile sensor_value) 
+                    forkIO $ sendNotification 
+                    forkIO $ playSound
               text "success"
           Left y -> text "data is wrong"
 
@@ -44,11 +49,19 @@ writeToFile sensor_value = do
     removeFile dataFile
     renameFile tmpDataFile dataFile
 
-sendNotification :: IO String
-sendNotification = readProcess "@@notify-send@@" ["-u", "critical", "Ringing..."] []
+sendNotification :: IO ()
+sendNotification = do
+    apiKey <- getEnv "API_KEY"
+    readProcess "@@notify-send@@" ["-u", "critical", "Ringing..."] []
+    W.get $ "https://api.telegram.org/bot"<>apiKey<>"/sendMessage?chat_id=680386129&text=KapıCaliiiii"
+    W.get $ "https://api.telegram.org/bot"<>apiKey<>"/sendMessage?chat_id=471873694&text=KapıCaliiiii"
+    return ()
 
-playSound :: IO String
-playSound = readProcess "@@aplay@@" ["@@SIREN@@"] []
+
+playSound :: IO ()
+playSound = do
+    readProcess "@@aplay@@" ["@@SIREN@@"] []
+    return ()
 
 dataStore :: IO FilePath
 dataStore = do
