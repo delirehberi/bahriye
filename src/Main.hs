@@ -16,6 +16,7 @@ import Data.Time (getCurrentTime)
 import qualified Network.Wreq as W (get) 
 import Control.Concurrent (forkIO)
 import System.Environment (getEnv)
+import qualified Data.List as DL (filter)
 
 
 main :: IO ()
@@ -53,9 +54,11 @@ sendNotification :: IO ()
 sendNotification = do
     apiKey <- getEnv "API_KEY"
     readProcess "@@notify-send@@" ["-u", "critical", "Ringing..."] []
-    W.get $ "https://api.telegram.org/bot"<>apiKey<>"/sendMessage?chat_id=680386129&text=KapıCaliiiii"
-    W.get $ "https://api.telegram.org/bot"<>apiKey<>"/sendMessage?chat_id=471873694&text=KapıCaliiiii"
+    W.get $ "https://api.telegram.org/bot"<>(clearify apiKey)<>"/sendMessage?chat_id=680386129&text=Kap%C4%B1%20%C3%87ald%C4%B1"
+    W.get $ "https://api.telegram.org/bot"<>(clearify apiKey)<>"/sendMessage?chat_id=471873694&text=Kap%C4%B1%20%C3%87ald%C4%B1"
     return ()
+    where
+        clearify apiKey = DL.filter (\x->x/='\n') apiKey
 
 
 playSound :: IO ()
